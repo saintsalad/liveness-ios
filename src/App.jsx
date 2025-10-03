@@ -12,6 +12,7 @@ function App() {
   const [seconds, setSeconds] = useState(0)
   const [permissionError, setPermissionError] = useState(null)
   const [permissionState, setPermissionState] = useState('requesting') // 'requesting', 'granted', 'denied'
+  const [videoDetails, setVideoDetails] = useState(null)
 
   // Refs
   const webcamRef = useRef(null)
@@ -43,9 +44,19 @@ function App() {
     }
   }
 
+  // Utility function to format file size
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
   // Reset video
   const resetVideo = () => {
     setVideoURL(null)
+    setVideoDetails(null)
     chunksRef.current = []
     setSeconds(0)
     stopTimer()
@@ -55,6 +66,21 @@ function App() {
   const handleRecordingStop = (recorder) => {
     const mimeType = recorder.mimeType
     const blob = new Blob(chunksRef.current, { type: mimeType })
+
+    // Calculate video details
+    const fileSize = blob.size
+    const fileExtension = mimeType.split('/')[1] || 'webm'
+    const fileType = mimeType.split('/')[0] || 'video'
+
+    setVideoDetails({
+      size: fileSize,
+      formattedSize: formatFileSize(fileSize),
+      extension: fileExtension,
+      type: fileType,
+      mimeType: mimeType,
+      duration: 15 - seconds // Approximate duration based on timer
+    })
+
     setVideoURL(URL.createObjectURL(blob))
     setRecording(false)
     stopTimer()
@@ -261,6 +287,41 @@ function App() {
                 controls
                 className="video-preview"
               />
+
+              {/* Video Details */}
+              {videoDetails && (
+                <div className="video-details">
+                  <div className="video-details-header">
+                    <h3>Video Details</h3>
+                  </div>
+                  <div className="video-details-grid">
+                    <div className="detail-item">
+                      <span className="detail-label">File Size</span>
+                      <span className="detail-value">{videoDetails.formattedSize}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Format</span>
+                      <span className="detail-value">{videoDetails.extension.toUpperCase()}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Type</span>
+                      <span className="detail-value">{videoDetails.type}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Duration</span>
+                      <span className="detail-value">{videoDetails.duration}s</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">MIME Type</span>
+                      <span className="detail-value">{videoDetails.mimeType}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">Raw Size</span>
+                      <span className="detail-value">{videoDetails.size.toLocaleString()} bytes</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
