@@ -228,10 +228,12 @@ body {
   transform: translate(-50%, -50%);
   width: 90%;
   max-width: 600px;
+  max-height: 90vh;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(20px);
   border-radius: 20px;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
   animation: scaleIn 0.4s ease-out;
@@ -252,6 +254,7 @@ body {
   backdrop-filter: blur(10px);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
 }
 
 .video-details-header {
@@ -296,6 +299,31 @@ body {
   color: white;
   font-weight: 600;
   font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+
+/* Custom Scrollbar for Video Preview Container */
+.video-preview-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.video-preview-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.video-preview-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.video-preview-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Firefox scrollbar styling */
+.video-preview-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
 }
 
 /* Control Panel */
@@ -561,11 +589,13 @@ body {
   .video-preview-container {
     width: 95%;
     max-width: none;
+    max-height: 85vh;
   }
 
   .video-details {
     margin-top: 16px;
     padding: 16px;
+    margin-bottom: 16px;
   }
 
   .video-details-header h3 {
@@ -609,9 +639,14 @@ body {
     font-size: 18px;
   }
 
+  .video-preview-container {
+    max-height: 80vh;
+  }
+
   .video-details {
     margin-top: 12px;
     padding: 12px;
+    margin-bottom: 12px;
   }
 
   .video-details-header h3 {
